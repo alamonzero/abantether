@@ -20,7 +20,6 @@ def buy_from_third_party_exchange(self, currency: str, amount: float):
     try:
         purchase_was_successful = buy_from_exchange(currency, amount)
         if purchase_was_successful:
-            print("---run---")
             return
         self.retry()
     except Exception as e:

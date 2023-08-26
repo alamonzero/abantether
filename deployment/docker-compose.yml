@@ -33,7 +33,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: "python manage.py makemigrations && python manage.py migrate && celery -A abantether.celery worker --loglevel=info --without-gossip --detach && python manage.py runserver 0.0.0.0:8000"
+    command: "python manage.py makemigrations && python manage.py migrate && celery -A abantether.celery worker --loglevel=info --without-gossip --queues buy_from_third_party_exchange --detach && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     environment:
