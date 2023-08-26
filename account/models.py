@@ -40,4 +40,4 @@ class WalletAccount(TimestampBaseModel):
         max_digits=20, decimal_places=10, null=False, default=0
     )
     number = models.BigIntegerField(null=False, db_index=True)
-    # custom_objects = WalletAccountCustomManager()
+    custom_objects = WalletAccountCustomManager()
