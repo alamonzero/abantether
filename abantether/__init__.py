@@ -1,0 +1,1 @@
+from abantether.celery import app

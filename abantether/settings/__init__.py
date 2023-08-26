@@ -1,0 +1,1 @@
+from abantether.settings.local import *

@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD: "1234"
+      - POSTGRES_USER: system
+      - POSTGRES_DB: aban_tether
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - abantether
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - abantether
+
+  django:
+    image: abantether-django
+    container_name: django
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "python manage.py makemigrations && python manage.py migrate && celery -A abantether.celery worker --loglevel=info --without-gossip --detach && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: "6379"
+      REDIS_DB: "0"
+      POSTGRES_DB: aban_tether
+      POSTGRES_USER: system
+      POSTGRES_PASSWORD: "1234"
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - abantether
+
+networks:
+  abantether:
+    driver: bridge
+
+volumes:
+  redis-data:
+    driver: local
